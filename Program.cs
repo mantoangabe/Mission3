@@ -30,16 +30,23 @@ while (programLooper == true)
             Console.WriteLine("Enter Quantity: ");
             string Quantityinput = Console.ReadLine();
             
-            Console.WriteLine("Enter Expiration Date: ");
+            Console.WriteLine("Enter Expiration Date: (eg. MM/DD/YYYY)");
             string  ExpDateInput = Console.ReadLine();
             if (
                 int.TryParse(Quantityinput, out int itemQuantity) &&
                 DateTime.TryParse(ExpDateInput, out DateTime itemExpirationDate)
             )
             {
+                if (itemQuantity < 0)
+                {
+                    Console.WriteLine("Quantity cannot be negative, please try again");
+                    break;
+                }
+
                 var fooditem = new FoodItem(itemName, itemCategory, itemQuantity, itemExpirationDate);
                 foodItems.Add(fooditem);
             }
+
             else
             {
                 Console.WriteLine("Invalid input, please try again");
@@ -47,21 +54,36 @@ while (programLooper == true)
 
             break;
         case 2:
-            int i = 0;
-            while ( i < foodItems.Count)
+            if (foodItems.Count == 0)
             {
-                Console.WriteLine(i +1);    
-                Console.WriteLine(foodItems[i].Name);
-                i++;
+                Console.WriteLine("No food items to delete.");
+                break;
+            }
+
+            for (int idx = 0; idx < foodItems.Count; idx++)
+            {
+                Console.WriteLine($"{idx + 1}. {foodItems[idx].Name}");
+            }
+
+            Console.WriteLine("Select the number of a Food Item to delete: ");
+            if (int.TryParse(Console.ReadLine(), out int deleteInt) &&
+                deleteInt >= 1 && deleteInt <= foodItems.Count)
+            {
+                foodItems.RemoveAt(deleteInt - 1);
+            }
+            else
+            {
+                Console.WriteLine("Invalid input, please try again");
             }
             break;
+
         case 3:
             foreach (var item in foodItems)
             {
-                Console.WriteLine(item.Name);
-                Console.WriteLine(item.Category);
-                Console.WriteLine(item.Quantity);
-                Console.WriteLine(item.ExpirationDate);
+                Console.WriteLine("Name: " + item.Name);
+                Console.WriteLine("Category: " + item.Category);
+                Console.WriteLine("Quantity: " + item.Quantity);
+                Console.WriteLine("Expiration Date: " + item.ExpirationDate);
                 Console.WriteLine(" ------ " );
             }
             Console.WriteLine("Press any key to return to Main Menu ...");
